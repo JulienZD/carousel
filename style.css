@@ -1,0 +1,49 @@
+﻿body {
+    box-sizing: border-box;
+}
+
+#carousel-template {
+    background-color: darkgrey;
+}
+
+#carousel #bigimg {
+    margin: 0 auto;
+    width: 700px;
+    height: 400px;
+    background-repeat: round;
+    cursor: pointer;
+}
+
+#carousel .bottom-wrapper {
+    padding-top: 1em;
+    display: flex;
+    padding-left: 10px;
+    padding-right: 10px;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 1em;
+}
+
+#carousel .slideshow {
+    display: flex;
+    justify-content: center;
+}
+
+#carousel .thumb {
+    height: 25%;
+    width: 25%;
+    padding: 0em 0.5em;
+}
+
+#carousel .arrow-left, #carousel .arrow-right {
+    width: 20%;
+    height: 25px;
+}
+
+#carousel .arrow img{
+    width: 100%;
+}
+
+#leftArrow, #rightArrow {
+    width: 200px;
+}
