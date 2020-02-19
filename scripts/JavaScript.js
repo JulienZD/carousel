@@ -1,40 +1,43 @@
 ﻿$().ready(function () {
-    initCarousel();
+    initCarousel(".carousel");
 });
 
-function initCarousel() {
-    var carousel = $(".carousel");
-    $("#carousel-template").children().appendTo(carousel);
+function initCarousel(selector) {
+    var $carousel = $(selector);
+    $("#carousel-template").children().appendTo($carousel);
 
     // Add all images in list to array
     var images = [];
-    $("img[data-src]").each(function () {
+    $carousel.find("img[data-src]").each(function () {
         images.push($(this));
         $(this).remove();
     });
     
-    // Get size of thumbnail sidescroll size
-    if ($(carousel).data('size') > images.length) {
-        $(carousel).data('size', images.length);
+    var amtOfThumbs = $carousel.data('size');
+    // Ensure size doesn't exceed the total amount of images
+    if (amtOfThumbs > images.length) {
+        amtOfThumbs = images.length;
     }
-    $(carousel).removeAttr('data-size');
-    carousel.data("data-images", images);
-    carousel.find('.slideshow').data('data-');
-    //showArrow(carousel, "left");
-    
+    $carousel.find('.slideshow').data({
+        images: images,
+        currentIndex: 0,
+        amtOfThumbs: amtOfThumbs,
+        slideshowIter: 5
+    });
+    showArrow($carousel, "left");
     // Add thumbnail sidescroll to #slideShow
-    //showSlideshowPage();   
-    //showArrow(carousel, "right");
+    showSlideshowPage($carousel);   
+    showArrow($carousel, "right");
     /*for (img of images) {
         var carouselThumb = carousel.find(".thumb[src='']").clone();
         carouselThumb.attr({
             src: img.attr("data-src"),
-            "data-link": img.attr("data-img-link"),
+            "data-link": img.attr("data-link"),
             "data-thumb-text": img.attr("data-txt")
         });
         carouselThumb.appendTo(carousel.find(".slideshow"));
     }*/
-    // Add first thumbnail to #bigImg
+    // Add first thumbnail to .bigImg
     // Add left and right arrows
     // Show carousel
     //carousel.attr("id", "carousel");
@@ -42,36 +45,41 @@ function initCarousel() {
     
     //bindBigImg(images[bigImgId - 1]);
     //bindClicksToThumbnails(images);
-    carousel.show();
+    $carousel.show();
 }
 
-function showSlideshowPage() {
+function showSlideshowPage(el) {
+    console.log($('.slideshow').data());
     // TODO: Set first image in slideshow to bigimg
-    var amtOfSlideshowThumbs = $(".carousel").data('size');
-    var slideShowIter = 9;
+    var $slideshow = el.find('.slideshow');
+    var amtOfSlideshowThumbs = $slideshow.data('amtOfThumbs');
+    var slideShowIter = $slideshow.data('slideshowIter');
+    var images = $slideshow.data('images');
     for (var i = slideShowIter; i < amtOfSlideshowThumbs + slideShowIter; i++) {
         if (i >= images.length) {
             break;
         }
         var img = images[i];
-        var carouselThumb = carousel.find(".thumb[src='']").clone();
-        carouselThumb.attr({
-            src: img.attr("data-src"),
-            "data-link": img.attr("data-img-link"),
-            "data-thumb-text": img.attr("data-txt")
+        var thumb = el.find(".thumb:hidden").clone();
+        thumb.attr({
+            alt: img.data('txt'),
+            src: img.data('src')
         });
-        carouselThumb.appendTo(carousel.find(".slideshow")).show();
-        bindSetAsBigImg(carouselThumb);
+        thumb.data('link', img.data('link'))
+        thumb.appendTo($slideshow).show();
+        bindSetAsBigImg(thumb);
+        if (i == slideShowIter) {
+            el.find('.bigimg').attr("style", "background-image: url(" + img.data('src') + ")");
+            bindBigImg(thumb);
+        }
     }
 }
 
 function bindClicksToThumbnails(images) {
     $(images).each(function () {
-        //console.log(this);
         $(this).on("click", function () {
-            alert("HEY");
-            setBigImg(this);
-            window.location.href = $(this).data("img-link");
+            bindBigImg(this);
+            window.location.href = $(this).data("link");
         });
     });
 }
@@ -79,16 +87,15 @@ function bindClicksToThumbnails(images) {
 function bindSetAsBigImg(img) {
     var imgUrl = $(img).attr("src");
     $(img).on("click", function() {
-        $("#bigimg").attr("style", "background-image: url(" + imgUrl + ")");
+        $(".bigimg").attr("style", "background-image: url(" + imgUrl + ")");
+        bindBigImg(this);  // This should be placed elsewhere
     });
 }
 
 function showArrow(el, direction) {
-    var elname = el.attr('id').split('-')[0];
-    // TODO: Remove 'carousel-' from element
-    var carouselArrow = el.find("." + elname + "-arrow-" + direction).clone();
+    var carouselArrow = el.find(".arrow-" + direction);
     carouselArrow.attr("style", "background-image: url(img/4.png)");
-    el.find("." + elname + "-arrow-" + direction).replaceWith(carouselArrow);
+    el.find(".arrow-" + direction).replaceWith(carouselArrow);
     $(carouselArrow).on("click", function() {
         showNextThumbnails(direction);
     });
@@ -106,7 +113,7 @@ function showNextThumbnails(direction) {
     //         var carouselThumb = carousel.find(".thumb[src='']").clone();
     //         carouselThumb.attr({
     //             src: images[i + iter].attr("data-src"),
-    //             "data-link": images[i + iter].attr("data-img-link"),
+    //             "data-link": images[i + iter].attr("data-link"),
     //             "data-thumb-text": images[i + iter].attr("data-txt")
     //         });
     //         carouselThumb.appendTo(carousel.find(".slideshow")).show();
@@ -119,10 +126,10 @@ function showNextThumbnails(direction) {
 }
 
 function bindBigImg(img) {
-    console.log(img);
-    var dest = $(img).data("img-link");
-    var id = $(img).data("src");
-    $("#bigimg[style='background-image: url(" + id + ")']").on("click", function () {
+    // TODO: if bound > return
+    var dest = $(img).data("link");
+    var src = $(img).attr("src");
+    $(".carousel .bigimg[style='background-image: url(" + src + ")']").on("click", function () {
         window.location.href = dest;
     });
 }
