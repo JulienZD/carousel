@@ -2,6 +2,9 @@
     initCarousel(".carousel");
 });
 
+// TODO: Find a way to send the current carousel with the binding of the arrows so that the correct
+//  carousel gets changed when they get clicked.
+
 function initCarousel(selector) {
     var $carousel = $(selector);
     $("#carousel-template").children().appendTo($carousel);
@@ -22,12 +25,12 @@ function initCarousel(selector) {
         images: images,
         currentIndex: 0,
         amtOfThumbs: amtOfThumbs,
-        slideshowIter: 5
+        slideshowIter: 0
     });
-    showArrow($carousel, "left");
+    //showArrow($carousel, "left");
     // Add thumbnail sidescroll to #slideShow
-    showSlideshowPage($carousel);   
-    showArrow($carousel, "right");
+    updateSlideshow($carousel);   
+    //showArrow($carousel, "right");
     /*for (img of images) {
         var carouselThumb = carousel.find(".thumb[src='']").clone();
         carouselThumb.attr({
@@ -48,10 +51,10 @@ function initCarousel(selector) {
     $carousel.show();
 }
 
-function showSlideshowPage(el) {
-    console.log($('.slideshow').data());
-    // TODO: Set first image in slideshow to bigimg
+function updateSlideshow(el) {
+    // console.log($('.slideshow').data());
     var $slideshow = el.find('.slideshow');
+    removeVisibleThumbs($slideshow);
     var amtOfSlideshowThumbs = $slideshow.data('amtOfThumbs');
     var slideShowIter = $slideshow.data('slideshowIter');
     var images = $slideshow.data('images');
@@ -73,6 +76,23 @@ function showSlideshowPage(el) {
             bindBigImg(thumb);
         }
     }
+    $slideshow.data('slideshowIter', slideShowIter + amtOfSlideshowThumbs);
+    if (slideShowIter != 0) {
+        showArrow(el, "left");
+    }
+    if (el.find('.thumb:not(:hidden)').length >= amtOfSlideshowThumbs) {
+        showArrow(el, "right");
+    }
+}
+
+function removeVisibleThumbs(el) {
+    var visibleThumbs = el.find('.thumb:not(:hidden)');
+    if (visibleThumbs.length < el.data('amtOfThumbs')) {
+        return
+    }
+    visibleThumbs.each(function() {
+        $(this).remove();
+    });
 }
 
 function bindClicksToThumbnails(images) {
@@ -97,6 +117,7 @@ function showArrow(el, direction) {
     carouselArrow.attr("style", "background-image: url(img/4.png)");
     el.find(".arrow-" + direction).replaceWith(carouselArrow);
     $(carouselArrow).on("click", function() {
+        updateSlideshow($('.carousel'));
         showNextThumbnails(direction);
     });
 }
