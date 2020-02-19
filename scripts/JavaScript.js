@@ -1,8 +1,11 @@
 ﻿$().ready(function () {
-    initcarousel();
+    initCarousel();
 });
 
-function initcarousel() {
+function initCarousel() {
+    var carousel = $(".carousel");
+    $("#carousel-template").children().appendTo(carousel);
+
     // Add all images in list to array
     var images = [];
     $("img[data-src]").each(function () {
@@ -11,19 +14,41 @@ function initcarousel() {
     });
     
     // Get size of thumbnail sidescroll size
-    if ($("carousel").data('size') > images.length) {
-        $("carousel").data('size', images.length);
+    if ($(carousel).data('size') > images.length) {
+        $(carousel).data('size', images.length);
     }
-    var amtOfSlideshowThumbs = $("carousel").data('size');
-    var carousel = $("#carousel-template").clone();
+    $(carousel).removeAttr('data-size');
     carousel.data("data-images", images);
     carousel.find('.slideshow').data('data-');
-    var bigImgId = parseInt(slideShowIter) + 1;
-    carousel.find("#bigimg").attr("style", "background-image: url(img/" + bigImgId + ".png)");
-    showArrow(carousel, "left");
-    var slideShowIter = 9;
+    //showArrow(carousel, "left");
+    
     // Add thumbnail sidescroll to #slideShow
-    // TODO: Bind on click events to each thumbnail > if clicked make that thumb the bigimg
+    //showSlideshowPage();   
+    //showArrow(carousel, "right");
+    /*for (img of images) {
+        var carouselThumb = carousel.find(".thumb[src='']").clone();
+        carouselThumb.attr({
+            src: img.attr("data-src"),
+            "data-link": img.attr("data-img-link"),
+            "data-thumb-text": img.attr("data-txt")
+        });
+        carouselThumb.appendTo(carousel.find(".slideshow"));
+    }*/
+    // Add first thumbnail to #bigImg
+    // Add left and right arrows
+    // Show carousel
+    //carousel.attr("id", "carousel");
+    
+    
+    //bindBigImg(images[bigImgId - 1]);
+    //bindClicksToThumbnails(images);
+    carousel.show();
+}
+
+function showSlideshowPage() {
+    // TODO: Set first image in slideshow to bigimg
+    var amtOfSlideshowThumbs = $(".carousel").data('size');
+    var slideShowIter = 9;
     for (var i = slideShowIter; i < amtOfSlideshowThumbs + slideShowIter; i++) {
         if (i >= images.length) {
             break;
@@ -37,26 +62,7 @@ function initcarousel() {
         });
         carouselThumb.appendTo(carousel.find(".slideshow")).show();
         bindSetAsBigImg(carouselThumb);
-    }   
-    showArrow(carousel, "right");
-    /*for (img of images) {
-        var carouselThumb = carousel.find(".thumb[src='']").clone();
-        carouselThumb.attr({
-            src: img.attr("data-src"),
-            "data-link": img.attr("data-img-link"),
-            "data-thumb-text": img.attr("data-txt")
-        });
-        carouselThumb.appendTo(carousel.find(".slideshow"));
-    }*/
-    // Add first thumbnail to #bigImg
-    // Add left and right arrows
-    // Show carousel
-    carousel.attr("id", "carousel");
-    carousel.show();
-    carousel.removeAttr("style");
-    $("#carousel").replaceWith(carousel);
-    bindBigImg(images[bigImgId - 1]);
-    //bindClicksToThumbnails(images);
+    }
 }
 
 function bindClicksToThumbnails(images) {

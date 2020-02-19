@@ -2,11 +2,11 @@
     box-sizing: border-box;
 }
 
-#carousel-template {
+.carousel-template {
     background-color: darkgrey;
 }
 
-#carousel #bigimg {
+.carousel #bigimg {
     margin: 0 auto;
     width: 700px;
     height: 400px;
@@ -14,7 +14,7 @@
     cursor: pointer;
 }
 
-#carousel .bottom-wrapper {
+.carousel .bottom-wrapper {
     padding-top: 1em;
     display: flex;
     padding-left: 10px;
@@ -24,23 +24,23 @@
     padding-bottom: 1em;
 }
 
-#carousel .slideshow {
+.carousel .slideshow {
     display: flex;
     justify-content: center;
 }
 
-#carousel .thumb {
+.carousel .thumb {
     height: 25%;
     width: 25%;
     padding: 0em 0.5em;
 }
 
-#carousel .arrow-left, #carousel .arrow-right {
+.carousel .arrow-left, .carousel .arrow-right {
     width: 20%;
     height: 25px;
 }
 
-#carousel .arrow img{
+.carousel .arrow img{
     width: 100%;
 }
 
