@@ -49,7 +49,7 @@ function doIets() {
     
     showThumbnails();
 
-    showBigImage();
+    //showBigImage();
   
     showArrows();
 }
@@ -94,10 +94,9 @@ function bindBigImageClick() {
 
 function showBigImage(image) {
     //set background
-    var url = $(image).data('src');
+    var url = $(image).attr('src');
     var bigimg = $('.bigimg');
-    bigimg.css('background-image', 'url(' + src + ')');
-    console.log(url);
+    $(bigimg).css('background-image', 'url(' + url + ')');
     //set click href
 }
 
