@@ -87,8 +87,10 @@ function bind() {
 
 function bindThumbClicks() {
     $('.thumb').on('click', function() {
+        $('.thumb').removeClass('selected-thumb');
         $(this).addClass('selected-thumb');
         showBigImage(this);
+        console.log($(this).data());
     });
 }
 
