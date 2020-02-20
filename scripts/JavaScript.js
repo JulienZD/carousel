@@ -11,54 +11,195 @@ function initCarousel(selector) {
 
     // Add all images in list to array
     var images = [];
+    var imgId = 1;
     $carousel.find("img[data-src]").each(function () {
-        images.push($(this));
-        $(this).remove();
+        var img = $(this);
+        images.push({
+            id: imgId,
+            src: img.data('src'),
+            alt: img.data('txt'),
+            href: img.data('link')
+        });
+       $(this).remove();
+        imgId++;
     });
-    
-    var amtOfThumbs = $carousel.data('size');
+    var size = $carousel.data('size');
     // Ensure size doesn't exceed the total amount of images
-    if (amtOfThumbs > images.length) {
-        amtOfThumbs = images.length;
+    if (size > images.length) {
+        size = images.length;
     }
     $carousel.find('.slideshow').data({
         images: images,
         currentIndex: 0,
-        amtOfThumbs: amtOfThumbs,
-        slideshowIter: 0
+        size: size,
+        startIndex: 0
     });
-    //showArrow($carousel, "left");
-    // Add thumbnail sidescroll to #slideShow
-    updateSlideshow($carousel);   
-    //showArrow($carousel, "right");
-    /*for (img of images) {
-        var carouselThumb = carousel.find(".thumb[src='']").clone();
-        carouselThumb.attr({
-            src: img.attr("data-src"),
-            "data-link": img.attr("data-link"),
-            "data-thumb-text": img.attr("data-txt")
-        });
-        carouselThumb.appendTo(carousel.find(".slideshow"));
-    }*/
-    // Add first thumbnail to .bigImg
-    // Add left and right arrows
-    // Show carousel
-    //carousel.attr("id", "carousel");
-    
-    
-    //bindBigImg(images[bigImgId - 1]);
-    //bindClicksToThumbnails(images);
+    // updateSlideshow($carousel);   
     $carousel.show();
+    /* Bind clicks to elements:
+     * - Arrows
+     * - Visible(?) thumbnails
+     */
+    doIets();
 }
+
+function doIets() {
+
+    bind();
+    
+    showThumbnails();
+
+    showBigImage();
+  
+    showArrows();
+}
+
+function showThumbnails() {
+    removeVisibleThumbs($('.carousel'));
+    // Loop through images, show from and to based on index
+    var images = $('.slideshow').data('images');
+    var index = $('.slideshow').data('startIndex');
+    var loopTimes = $('.slideshow').data('size');
+    for (var i = 0; i < loopTimes; i++) {
+        if (index >= images.length) {
+            break;
+        }
+        var img = images[index];
+        var thumb = $('.thumb:hidden').clone();
+        thumb.attr({
+            src: img['src'],
+            alt: img['alt']
+        });
+        thumb.appendTo('.slideshow').show();
+        console.log('Showing thumbnail: ' + index);
+        index++;
+    }
+}
+
+function bind() {
+    bindArrowClicks();
+    bindThumbClicks();
+    bindBigImageClick();
+}
+
+function bindThumbClicks() {
+    $('.thumb').on('click', function() {
+        showBigImage(this);
+    });
+}
+
+function bindBigImageClick() {
+
+}
+
+function showBigImage(image) {
+    //set background
+    var url = $(image).data('src');
+    var bigimg = $('.bigimg');
+    bigimg.css('background-image', 'url(' + src + ')');
+    console.log(url);
+    //set click href
+}
+
+function bindArrowClicks() {
+    //zoek arrow links en bind clickArrow('links')
+    $('.arrow-left').on('click', function() {
+        clickArrow('left');
+    });
+    
+    //zoek arrow rechts en bind clickArrow('rechts')
+    $('.arrow-right').on('click', function() {
+        clickArrow('right');
+    });
+}
+
+function clickArrow(direction) {
+    var startIndex = $('.slideshow').data('startIndex');
+    var size = $('.slideshow').data('size');
+    var maxLength = $('.slideshow').data('images').length;
+    if (direction == "left") {
+        // Set startIndex to startIndex - size
+        startIndex -= size;
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
+    }
+    else if (direction == "right") {
+        // Set startIndex to startIndex + size
+        startIndex += size;
+        if (startIndex >= maxLength) {
+            startIndex = maxLength - size + 1;
+        }
+    }
+    $('.slideshow').data('startIndex', startIndex); // Set new start index
+    showThumbnails();
+    // Aan het einde, update visiibilty van arrows
+    showArrows();
+}
+
+function showArrows() {
+    var maxLength = $('.slideshow').data('images').length;
+    var startIndex = $('.slideshow').data('startIndex');
+    var size = $('.slideshow').data('size');
+    var visibleThumbs = $('.slideshow').find('.thumb:not(:hidden)').length;
+
+    // showLeft is false if id 1 is not visible
+    var showLeft = startIndex != 0;
+    // showRight is false if visible thumbs are less than images.length - size
+    var showRight = startIndex != maxLength - size;
+    if (visibleThumbs < size) {
+        showRight = false;
+    }
+    var leftArrow = $('.arrow-left');
+    var rightArrow = $('.arrow-right');
+
+    if (showLeft) {
+        console.log('showing left arrow');
+        leftArrow.show(); 
+    }
+    else {
+        console.log('hiding left arrow');
+        leftArrow.hide();
+    }
+
+    if (showRight) {
+        console.log('showing right arrow');
+        rightArrow.show();
+    }
+    else {
+        console.log('hiding right arrow');
+        rightArrow.hide();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function updateSlideshow(el) {
     // console.log($('.slideshow').data());
     var $slideshow = el.find('.slideshow');
     removeVisibleThumbs($slideshow);
     var amtOfSlideshowThumbs = $slideshow.data('amtOfThumbs');
-    var slideShowIter = $slideshow.data('slideshowIter');
+    var startIndex = $slideshow.data('startIndex');
     var images = $slideshow.data('images');
-    for (var i = slideShowIter; i < amtOfSlideshowThumbs + slideShowIter; i++) {
+    for (var i = startIndex; i < amtOfSlideshowThumbs + startIndex; i++) {
         if (i >= images.length) {
             break;
         }
@@ -71,16 +212,16 @@ function updateSlideshow(el) {
         thumb.data('link', img.data('link'))
         thumb.appendTo($slideshow).show();
         bindSetAsBigImg(thumb);
-        if (i == slideShowIter) {
+        if (i == startIndex) {
             el.find('.bigimg').attr("style", "background-image: url(" + img.data('src') + ")");
             bindBigImg(thumb);
         }
     }
-    if (slideShowIter + amtOfSlideshowThumbs <= images.length) {
-        $slideshow.data('slideshowIter', slideShowIter + amtOfSlideshowThumbs);
-        console.log(slideShowIter + amtOfSlideshowThumbs);
+    if (startIndex + amtOfSlideshowThumbs <= images.length) {  
+        $slideshow.data('startIndex', startIndex + amtOfSlideshowThumbs);
+        console.log(startIndex + amtOfSlideshowThumbs);
     }
-    if (slideShowIter != 0) {
+    if (startIndex != 0) {
         showArrow(el, "left");
     }
     if (el.find('.thumb:not(:hidden)').length >= amtOfSlideshowThumbs) {
@@ -119,7 +260,7 @@ function scrollThumbsLeft(el) {
     var $slideshow = el.find('.slideshow');
     removeVisibleThumbs($slideshow);
     var amtOfSlideshowThumbs = $slideshow.data('amtOfThumbs');
-    var slideShowIter = $slideshow.data('slideshowIter');
+    var startIndex = $slideshow.data('startIndex');
     var images = $slideshow.data('images');
     // Get current iteration of pages shown
     // Show the currentIter - amtOfThumbs
@@ -131,7 +272,7 @@ function scrollThumbsLeft(el) {
         if (i >= images.length || i <= 0) {
             break;
         }
-        var img = images[slideShowIter - i];
+        var img = images[startIndex - i];
         var thumb = el.find(".thumb:hidden").clone();
         thumb.attr({
             alt: img.data('txt'),
@@ -140,13 +281,13 @@ function scrollThumbsLeft(el) {
         thumb.data('link', img.data('link'))
         thumb.appendTo($slideshow).show();
         bindSetAsBigImg(thumb);
-        if (i == slideShowIter) {
+        if (i == startIndex) {
             el.find('.bigimg').attr("style", "background-image: url(" + img.data('src') + ")");
             bindBigImg(thumb);
         }
-        console.log(slideShowIter - i);
+        console.log(startIndex - i);
     }
-    $slideshow.data('slideshowIter', slideShowIter - amtOfSlideshowThumbs);
+    $slideshow.data('startIndex', startIndex - amtOfSlideshowThumbs);
 }
 
 function scrollThumbsRight() {
