@@ -76,7 +76,10 @@ function updateSlideshow(el) {
             bindBigImg(thumb);
         }
     }
-    $slideshow.data('slideshowIter', slideShowIter + amtOfSlideshowThumbs);
+    if (slideShowIter + amtOfSlideshowThumbs <= images.length) {
+        $slideshow.data('slideshowIter', slideShowIter + amtOfSlideshowThumbs);
+        console.log(slideShowIter + amtOfSlideshowThumbs);
+    }
     if (slideShowIter != 0) {
         showArrow(el, "left");
     }
@@ -112,38 +115,58 @@ function bindSetAsBigImg(img) {
     });
 }
 
-function showArrow(el, direction) {
-    var carouselArrow = el.find(".arrow-" + direction);
-    carouselArrow.attr("style", "background-image: url(img/4.png)");
-    el.find(".arrow-" + direction).replaceWith(carouselArrow);
-    $(carouselArrow).on("click", function() {
-        updateSlideshow($('.carousel'));
-        showNextThumbnails(direction);
-    });
+function scrollThumbsLeft(el) {
+    var $slideshow = el.find('.slideshow');
+    removeVisibleThumbs($slideshow);
+    var amtOfSlideshowThumbs = $slideshow.data('amtOfThumbs');
+    var slideShowIter = $slideshow.data('slideshowIter');
+    var images = $slideshow.data('images');
+    // Get current iteration of pages shown
+    // Show the currentIter - amtOfThumbs
+    // slideSIter = 8
+    // amtOfThumbs = 4
+    // 8 - 9 - 10 - 11
+    // 7 - 6 - 5 - 4
+    for (var i = 1; i <= amtOfSlideshowThumbs; i++) {
+        if (i >= images.length || i <= 0) {
+            break;
+        }
+        var img = images[slideShowIter - i];
+        var thumb = el.find(".thumb:hidden").clone();
+        thumb.attr({
+            alt: img.data('txt'),
+            src: img.data('src')
+        });
+        thumb.data('link', img.data('link'))
+        thumb.appendTo($slideshow).show();
+        bindSetAsBigImg(thumb);
+        if (i == slideShowIter) {
+            el.find('.bigimg').attr("style", "background-image: url(" + img.data('src') + ")");
+            bindBigImg(thumb);
+        }
+        console.log(slideShowIter - i);
+    }
+    $slideshow.data('slideshowIter', slideShowIter - amtOfSlideshowThumbs);
 }
 
-function showNextThumbnails(direction) {
-    var carouselSlideshow = $(".slideshow");
-    var thumbAmount = carouselSlideshow.find(".thumb").length - 1;
-    var iter = carouselSlideshow.attr("data-iter");
-    console.log(iter);
-    console.log(thumbAmount);
-    iter += thumbAmount;
-    // if (direction == "left") {
-    //     for (var i = 0; i < thumbAmount; i++) {
-    //         var carouselThumb = carousel.find(".thumb[src='']").clone();
-    //         carouselThumb.attr({
-    //             src: images[i + iter].attr("data-src"),
-    //             "data-link": images[i + iter].attr("data-link"),
-    //             "data-thumb-text": images[i + iter].attr("data-txt")
-    //         });
-    //         carouselThumb.appendTo(carousel.find(".slideshow")).show();
-    //         bindSetAsBigImg(carouselThumb);
-    //     }
-    // }
-    // else {
+function scrollThumbsRight() {
 
-    // }
+}
+
+function showArrow($el, direction) {
+    var $arrow = $el.find(".arrow-" + direction);
+    $arrow.attr("style", "background-image: url(img/4.png)");
+    $el.find(".arrow-" + direction).replaceWith($arrow);
+    if (direction == "left") {
+        $($arrow).on("click", function() {
+            scrollThumbsLeft($el);    
+        });
+    }
+    else {
+        $($arrow).on("click", function() {
+            updateSlideshow($('.carousel'));
+        });
+    }
 }
 
 function bindBigImg(img) {
