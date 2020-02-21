@@ -5,7 +5,6 @@
 function initCarousel(selector) {
     var $carousel = $(selector);
     $("#carousel-template").children().appendTo($carousel);
-    // Add all images in list to array
     setInitImages($carousel);
     setInitData($carousel);
     updateSlideshowElements()
