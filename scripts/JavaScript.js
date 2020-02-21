@@ -10,7 +10,7 @@ function initCarousel(selector) {
 
     // Add all images in list to array
     var images = [];
-    var imgId = 1;
+    var imgId = 0;
     $carousel.find("img[data-src]").each(function () {
         var img = $(this);
         images.push({
@@ -27,7 +27,7 @@ function initCarousel(selector) {
     if (size > images.length) {
         size = images.length;
     }
-    // Default
+    // Default value
     if (size <= 0 || size == null) {
         size = 4;
     }
@@ -55,12 +55,20 @@ function getSize() {
     return $('.slideshow').data('size');
 }
 
+function getSelectedIndex() {
+    return $('.slideshow').data('selectedIndex');
+}
+
+function setSelectedIndex(id) {
+    $('.slideshow').data('selectedIndex', id);
+}
+
 function showThumbnails() {
     removeVisibleThumbs($('.carousel'));
     var images = getImages();
     var index = getStartIndex();
     var size = getSize();
-    // Display thumbnails based on the current index
+    // Display thumbnails based on the current start index
     for (var i = 0; i < size; i++) {
         // Prevent indexOutOfBounds
         if (index >= images.length) {
@@ -73,7 +81,10 @@ function showThumbnails() {
             alt: img['alt']
         });
         // Set href for bigImg
-        $(thumb).data('href', img['href']);
+        $(thumb).data({
+            'href': img['href'],
+            'id': img['id']
+        });
         thumb.appendTo('.slideshow').show();
         index++;
     }
@@ -83,14 +94,16 @@ function bind() {
     bindArrowClicks();
     bindThumbClicks();
     bindBigImageClick();
+    bindArrowKeys()
 }
 
 function bindThumbClicks() {
     $('.thumb').on('click', function() {
-        $('.thumb').removeClass('selected-thumb');
-        $(this).addClass('selected-thumb');
+        // Set selectedIndex to this imgId
+        var imgId = $(this).data('id');
+        setSelectedIndex(imgId);
+        setSelectedThumb()
         showBigImage(this);
-        console.log($(this).data());
     });
 }
 
@@ -154,17 +167,17 @@ function showArrows() {
     var visibleThumbs = $('.slideshow').find('.thumb:not(:hidden)').length;
 
     // False when id 0 is not visible
-    var showLeft = startIndex != 0;
+    var showLeftArrow = startIndex != 0;
     // False when the amt of visible thumbs is less than images.length - size
-    var showRight = startIndex != maxLength - size;
+    var showRightArrow = startIndex != maxLength - size;
     if (visibleThumbs < size) {
         // Last page has been reached
-        showRight = false;
+        showRightArrow = false;
     }
     var leftArrow = $('.arrow-left');
     var rightArrow = $('.arrow-right');
 
-    if (showLeft) {
+    if (showLeftArrow) {
         console.log('Showing left arrow');
         leftArrow.show(); 
     }
@@ -173,7 +186,7 @@ function showArrows() {
         leftArrow.hide();
     }
 
-    if (showRight) {
+    if (showRightArrow) {
         console.log('Showing right arrow');
         rightArrow.show();
     }
@@ -190,6 +203,35 @@ function removeVisibleThumbs() {
     });
 }
 
-function setActiveImg() {
+function setSelectedThumb() {
+    var selectedIndex = getSelectedIndex();
+    // Remove selected tag from thumbnails
+    $('.thumb').removeClass('selected-thumb');
+    // Find corresponding thumbnail and set it as selected
+    $('.thumb').filter(function() {
+        return $(this).data('id') == selectedIndex
+    }).addClass('selected-thumb');
+}
 
+function bindArrowKeys() {
+    $(document).keydown(function(e) {
+        switch(e.which) {
+            case 37:
+                selectNextThumb('left');
+                break;
+            case 39:
+                selectNextThumb('right');
+                break;
+        }
+    });
+}
+
+function selectNextThumb(direction) {
+    
+    if (direction == 'left') {
+
+    }
+    else if (direction == 'right') {
+
+    }
 }
