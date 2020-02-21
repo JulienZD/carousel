@@ -228,6 +228,7 @@ function selectNextThumb(direction) {
     var selectedIndex = getSelectedIndex();
     var size = getSize();
     var maxLength = getImages().length;
+    var visibleThumbs = $('.slideshow').find('.thumb:not(:hidden)').length;
     if (direction == 'left') {
         if (selectedIndex > 0 && selectedIndex % size == 0) {
             clickArrow('left');
@@ -242,7 +243,7 @@ function selectNextThumb(direction) {
         if (selectedIndex >= maxLength) {
             selectedIndex = maxLength - 1;
         }
-        if (selectedIndex % size == 0) {
+        if (selectedIndex % size == 0 && visibleThumbs == size) {
             clickArrow('right');
         }
     }
