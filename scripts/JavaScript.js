@@ -122,6 +122,13 @@ function updateSlideshowElements() {
     showBigImage();
 }
 
+function removeVisibleThumbs() {
+    var visibleThumbs = $('.thumb:not(:hidden)');
+    visibleThumbs.each(function() {
+        $(this).remove();
+    });
+}
+
 function showThumbnails() {
     removeVisibleThumbs($('.carousel'));
     var images = getImages();
@@ -147,34 +154,6 @@ function showThumbnails() {
         thumb.appendTo('.slideshow').show();
         index++;
     }
-}
-
-function clickArrow(direction) {
-    var startIndex = getStartIndex();
-    var selectedIndex;
-    var size = getSize();
-    var maxLength = getImages().length;
-    if (direction == "left") {
-        startIndex -= size;
-        if (startIndex < 0) {
-            startIndex = 0;
-        }
-        selectedIndex = startIndex + size - 1;
-    }
-    else if (direction == "right") {
-        startIndex += size;
-        if (startIndex >= maxLength) {
-            startIndex = maxLength - size;
-        }
-        selectedIndex = startIndex;
-    }
-    // Update indices
-    setStartIndex(startIndex);
-    setSelectedIndex(selectedIndex);
-    updateSlideshowElements()
-    // Bind click events to new thumbs - This is necessary as the thumbs get removed
-    //  on each showThumbnails() call
-    bindThumbClicks();
 }
 
 function showArrows() {
@@ -208,13 +187,6 @@ function showArrows() {
     }
 }
 
-function removeVisibleThumbs() {
-    var visibleThumbs = $('.thumb:not(:hidden)');
-    visibleThumbs.each(function() {
-        $(this).remove();
-    });
-}
-
 function setSelectedThumb() {
     var selectedIndex = getSelectedIndex();
     // Remove selected tag from thumbnails
@@ -224,6 +196,33 @@ function setSelectedThumb() {
         return $(this).data('id') == selectedIndex
     }).addClass('selected-thumb');
     showBigImage();
+}
+
+function clickArrow(direction) {
+    var startIndex = getStartIndex();
+    var selectedIndex;
+    var size = getSize();
+    var maxLength = getImages().length;
+    if (direction == "left") {
+        startIndex -= size;
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
+        selectedIndex = startIndex + size - 1;
+    }
+    else if (direction == "right") {
+        startIndex += size;
+        if (startIndex >= maxLength) {
+            startIndex = maxLength - size;
+        }
+        selectedIndex = startIndex;
+    }
+    setStartIndex(startIndex);
+    setSelectedIndex(selectedIndex);
+    updateSlideshowElements()
+    // Bind click events to new thumbs - This is necessary as the thumbs get removed
+    //  on each showThumbnails() call
+    bindThumbClicks();
 }
 
 function selectNextThumb(direction) {
@@ -253,7 +252,7 @@ function selectNextThumb(direction) {
 }
 
 function showBigImage() {
-    // Find selected image to set as bigImg
+    // Find image to set as bigImg
     var selectedIndex = getSelectedIndex();
     var image = $('.thumb').filter(function() {
         return $(this).data('id') == selectedIndex
