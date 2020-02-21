@@ -2,16 +2,20 @@
     initCarousel(".carousel");
 });
 
-// TODO: Add arrow key events
-
 function initCarousel(selector) {
     var $carousel = $(selector);
     $("#carousel-template").children().appendTo($carousel);
-
     // Add all images in list to array
+    setInitImages($carousel);
+    setInitData($carousel);
+    updateSlideshowElements()
+    bind();
+}
+
+function setInitImages(el) {
     var images = [];
     var imgId = 0;
-    $carousel.find("img[data-src]").each(function () {
+    el.find("img[data-src]").each(function () {
         var img = $(this);
         images.push({
             id: imgId,
@@ -22,26 +26,33 @@ function initCarousel(selector) {
        $(this).remove();
         imgId++;
     });
-    var size = $carousel.data('size');
+    el.find('.slideshow').data('images', images);
+}
+
+function setInitData(el) {
+    var imagesLen = getImages().length;
+    var size = el.data('size');
     // Ensure size doesn't exceed the total amount of images
-    if (size > images.length) {
-        size = images.length;
+    if (size > imagesLen) {
+        size = imagesLen;
     }
     // Default value
     if (size <= 0 || size == null) {
         size = 4;
     }
-    $carousel.find('.slideshow').data({
-        images: images,
+    el.find('.slideshow').data({
         selectedIndex: 0,
         size: size,
         startIndex: 0
     });
-    showThumbnails();
-    showBigImage();
-    showArrows();
-    setSelectedThumb();
-    bind();
+}
+
+function setSelectedIndex(id) {
+    $('.slideshow').data('selectedIndex', id);
+}
+
+function setStartIndex(index) {
+    $('.slideshow').data('startIndex', index);
 }
 
 function getStartIndex() {
@@ -60,12 +71,55 @@ function getSelectedIndex() {
     return $('.slideshow').data('selectedIndex');
 }
 
-function setSelectedIndex(id) {
-    $('.slideshow').data('selectedIndex', id);
+function bind() {
+    bindArrowClicks();
+    bindThumbClicks();
+    bindBigImageClick();
+    bindArrowKeys()
 }
 
-function setStartIndex(index) {
-    $('.slideshow').data('startIndex', index);
+function bindThumbClicks() {
+    $('.thumb').on('click', function() {
+        var imgId = $(this).data('id');
+        setSelectedIndex(imgId);
+        setSelectedThumb()
+    });
+}
+
+function bindBigImageClick() {
+    $('.bigimg').on('click', function() {
+        window.location.href = $(this).data('href');
+    });
+}
+
+function bindArrowClicks() {
+    $('.arrow-left').on('click', function() {
+        clickArrow('left');
+    });
+    
+    $('.arrow-right').on('click', function() {
+        clickArrow('right');
+    });
+}
+
+function bindArrowKeys() {
+    $(document).keydown(function(e) {
+        switch(e.which) {
+            case 37:
+                selectNextThumb('left');
+                break;
+            case 39:
+                selectNextThumb('right');
+                break;
+        }
+    });
+}
+
+function updateSlideshowElements() {
+    showThumbnails();
+    showArrows();
+    setSelectedThumb();
+    showBigImage();
 }
 
 function showThumbnails() {
@@ -95,55 +149,9 @@ function showThumbnails() {
     }
 }
 
-function bind() {
-    bindArrowClicks();
-    bindThumbClicks();
-    bindBigImageClick();
-    bindArrowKeys()
-}
-
-function bindThumbClicks() {
-    $('.thumb').on('click', function() {
-        var imgId = $(this).data('id');
-        setSelectedIndex(imgId);
-        setSelectedThumb()
-        showBigImage();
-    });
-}
-
-function bindBigImageClick() {
-    $('.bigimg').on('click', function() {
-        window.location.href = $(this).data('href');
-    });
-}
-
-function bindArrowClicks() {
-    $('.arrow-left').on('click', function() {
-        clickArrow('left');
-    });
-    
-    $('.arrow-right').on('click', function() {
-        clickArrow('right');
-    });
-}
-
-function bindArrowKeys() {
-    $(document).keydown(function(e) {
-        switch(e.which) {
-            case 37:
-                // console.log('left ' + getSelectedIndex());
-                selectNextThumb('left');
-                break;
-            case 39:
-                // console.log('right ' + getSelectedIndex());
-                selectNextThumb('right');
-                break;
-        }
-    });
-}
-
 function clickArrow(direction) {
     var startIndex = getStartIndex();
+    var selectedIndex;
     var size = getSize();
     var maxLength = getImages().length;
     if (direction == "left") {
@@ -151,18 +159,21 @@ function clickArrow(direction) {
         if (startIndex < 0) {
             startIndex = 0;
         }
+        selectedIndex = startIndex + size - 1;
     }
     else if (direction == "right") {
         startIndex += size;
         if (startIndex >= maxLength) {
             startIndex = maxLength - size;
         }
+        selectedIndex = startIndex;
     }
-    // Set new start index
+    // Update indices
     setStartIndex(startIndex);
-    showThumbnails();
-    showArrows();
-    // Bind click events to new thumbs
+    setSelectedIndex(selectedIndex);
+    updateSlideshowElements()
+    // Bind click events to new thumbs - This is necessary as the thumbs get removed
+    //  on each showThumbnails() call
     bindThumbClicks();
 }
 
@@ -212,6 +223,7 @@ function setSelectedThumb() {
     $('.thumb').filter(function() {
         return $(this).data('id') == selectedIndex
     }).addClass('selected-thumb');
+    showBigImage();
 }
 
 function selectNextThumb(direction) {
@@ -238,7 +250,6 @@ function selectNextThumb(direction) {
     }
     setSelectedIndex(selectedIndex);
     setSelectedThumb();
-    showBigImage()
 }
 
 function showBigImage() {
