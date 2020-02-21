@@ -40,6 +40,7 @@ function initCarousel(selector) {
     showThumbnails();
     showBigImage();
     showArrows();
+    setSelectedThumb();
     bind();
 }
 
@@ -61,6 +62,10 @@ function getSelectedIndex() {
 
 function setSelectedIndex(id) {
     $('.slideshow').data('selectedIndex', id);
+}
+
+function setStartIndex(index) {
+    $('.slideshow').data('startIndex', index);
 }
 
 function showThumbnails() {
@@ -99,11 +104,10 @@ function bind() {
 
 function bindThumbClicks() {
     $('.thumb').on('click', function() {
-        // Set selectedIndex to this imgId
         var imgId = $(this).data('id');
         setSelectedIndex(imgId);
         setSelectedThumb()
-        showBigImage(this);
+        showBigImage();
     });
 }
 
@@ -113,19 +117,6 @@ function bindBigImageClick() {
     });
 }
 
-function showBigImage(image) {
-    if (image == null) {
-        image = getImages()[getStartIndex()];
-    }
-    // Set background
-    var url = $(image).attr('src');
-    var bigimg = $('.bigimg');
-    $(bigimg).css('background-image', 'url(' + url + ')');
-    // Set click href
-    var href = $(image).data('href');
-    bigimg.data('href', href);
-}
-
 function bindArrowClicks() {
     $('.arrow-left').on('click', function() {
         clickArrow('left');
@@ -133,6 +124,21 @@ function bindArrowClicks() {
     
     $('.arrow-right').on('click', function() {
         clickArrow('right');
+    });
+}
+
+function bindArrowKeys() {
+    $(document).keydown(function(e) {
+        switch(e.which) {
+            case 37:
+                // console.log('left ' + getSelectedIndex());
+                selectNextThumb('left');
+                break;
+            case 39:
+                // console.log('right ' + getSelectedIndex());
+                selectNextThumb('right');
+                break;
+        }
     });
 }
 
@@ -153,7 +159,7 @@ function clickArrow(direction) {
         }
     }
     // Set new start index
-    $('.slideshow').data('startIndex', startIndex);
+    setStartIndex(startIndex);
     showThumbnails();
     showArrows();
     // Bind click events to new thumbs
@@ -165,7 +171,8 @@ function showArrows() {
     var startIndex = getStartIndex();
     var size = getSize();
     var visibleThumbs = $('.slideshow').find('.thumb:not(:hidden)').length;
-
+    var leftArrow = $('.arrow-left');
+    var rightArrow = $('.arrow-right');
     // False when id 0 is not visible
     var showLeftArrow = startIndex != 0;
     // False when the amt of visible thumbs is less than images.length - size
@@ -174,24 +181,18 @@ function showArrows() {
         // Last page has been reached
         showRightArrow = false;
     }
-    var leftArrow = $('.arrow-left');
-    var rightArrow = $('.arrow-right');
-
+    
     if (showLeftArrow) {
-        console.log('Showing left arrow');
         leftArrow.show(); 
     }
     else {
-        console.log('Hiding left arrow');
         leftArrow.hide();
     }
 
     if (showRightArrow) {
-        console.log('Showing right arrow');
         rightArrow.show();
     }
     else {
-        console.log('Hiding right arrow');
         rightArrow.hide();
     }
 }
@@ -213,25 +214,44 @@ function setSelectedThumb() {
     }).addClass('selected-thumb');
 }
 
-function bindArrowKeys() {
-    $(document).keydown(function(e) {
-        switch(e.which) {
-            case 37:
-                selectNextThumb('left');
-                break;
-            case 39:
-                selectNextThumb('right');
-                break;
-        }
-    });
-}
-
 function selectNextThumb(direction) {
-    
+    var selectedIndex = getSelectedIndex();
+    var size = getSize();
+    var maxLength = getImages().length;
     if (direction == 'left') {
-
+        if (selectedIndex > 0 && selectedIndex % size == 0) {
+            clickArrow('left');
+        }
+        selectedIndex -= 1;
+        if (selectedIndex < 0) {
+            selectedIndex = 0;
+        }
     }
     else if (direction == 'right') {
-
+        selectedIndex += 1;
+        if (selectedIndex >= maxLength) {
+            selectedIndex = maxLength - 1;
+        }
+        if (selectedIndex % size == 0) {
+            clickArrow('right');
+        }
     }
+    setSelectedIndex(selectedIndex);
+    setSelectedThumb();
+    showBigImage()
+}
+
+function showBigImage() {
+    // Find selected image to set as bigImg
+    var selectedIndex = getSelectedIndex();
+    var image = $('.thumb').filter(function() {
+        return $(this).data('id') == selectedIndex
+    });
+    // Set background
+    var url = $(image).attr('src');
+    var bigimg = $('.bigimg');
+    $(bigimg).css('background-image', 'url(' + url + ')');
+    // Set click href
+    var href = $(image).data('href');
+    bigimg.data('href', href);
 }
