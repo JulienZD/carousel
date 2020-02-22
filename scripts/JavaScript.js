@@ -193,10 +193,14 @@ function setSelectedThumb() {
     var selectedIndex = getSelectedIndex();
     // Remove selected tag from thumbnails
     $('.thumb-wrapper').removeClass('selected-thumb');
-    // Find corresponding thumbnail and set it as selected
-    $('.thumb-wrapper').filter(function() {
+    // Restore opacities back to initial values
+    $('.thumb-wrapper:not(:hidden)').each(function() {
+        $(this).fadeTo(1, 0.5);
+    });
+    // Find corresponding thumbnail and set it as selected by fading to max opacity
+    $('.thumb-wrapper:not(:hidden)').filter(function() {
         return $(this).find('.thumb').data('id') == selectedIndex
-    }).addClass('selected-thumb');
+    }).fadeTo(175, 1);
     showBigImage();
 }
 
@@ -232,9 +236,10 @@ function selectNextThumb(direction) {
     var size = getSize();
     var maxLength = getImages().length;
     var visibleThumbs = $('.slideshow').find('.thumb-wrapper:not(:hidden)').length;
+    var clickDir;
     if (direction == 'left') {
         if (selectedIndex > 0 && selectedIndex % size == 0) {
-            clickArrow('left');
+            clickDir = 'left';
         }
         selectedIndex -= 1;
         if (selectedIndex < 0) {
@@ -247,11 +252,18 @@ function selectNextThumb(direction) {
             selectedIndex = maxLength - 1;
         }
         if (selectedIndex % size == 0 && visibleThumbs == size) {
-            clickArrow('right');
+            clickDir = 'right';
         }
     }
     setSelectedIndex(selectedIndex);
-    setSelectedThumb();
+    if (clickDir != "") { 
+        // This gets called here instead of in the above expressions to avoid double
+        // fading
+        clickArrow(clickDir);
+    }
+    else {
+        setSelectedThumb();
+    }
 }
 
 function showBigImage() {
