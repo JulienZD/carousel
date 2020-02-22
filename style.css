@@ -92,3 +92,9 @@
 .carousel .arrow-left {
     background-image: url(img/arrow-left.svg);
 }
+
+.arrow-left-placeholder, .arrow-right-placeholder {
+    min-width: 69px;
+    min-height: 39px;
+    margin: 0 5px;
+}

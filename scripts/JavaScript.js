@@ -169,6 +169,8 @@ function showArrows() {
     var visibleThumbs = $('.slideshow').find('.thumb:not(:hidden)').length;
     var leftArrow = $('.arrow-left');
     var rightArrow = $('.arrow-right');
+    var placeholderLeft = $('.arrow-left-placeholder');
+    var placeholderRight = $('.arrow-right-placeholder');
     // False when id 0 is not visible
     var showLeftArrow = startIndex != 0;
     // False when the amt of visible thumbs is less than images.length - size
@@ -179,17 +181,21 @@ function showArrows() {
     }
     
     if (showLeftArrow) {
-        leftArrow.show(); 
+        leftArrow.show();
+        placeholderLeft.hide();
     }
     else {
         leftArrow.hide();
+        placeholderLeft.show();
     }
 
     if (showRightArrow) {
         rightArrow.show();
+        placeholderRight.hide();
     }
     else {
         rightArrow.hide();
+        placeholderRight.show();
     }
 }
 
