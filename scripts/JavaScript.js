@@ -78,8 +78,12 @@ function bind() {
 }
 
 function bindThumbClicks() {
-    $('.thumb').on('click', function() {
-        var imgId = $(this).data('id');
+    $('.thumb-wrapper').on('click', function() {
+        var imgId = $(this).find('.thumb').data('id');
+        // Prevent thumbnail from fading if it's already selected
+        if (getSelectedIndex() == imgId) {
+            return;
+        }
         setSelectedIndex(imgId);
         setSelectedThumb()
     });
