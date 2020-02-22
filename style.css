@@ -12,14 +12,23 @@
     width: 1200px;
 }
 
-label, p, h2 {
+label, p, h2, a {
     font-family: Tahoma, Geneva, sans-serif;
+    
+}
+
+label, p {
     font-size: .9em;
 }
 
 h2 {
     font-size: 1.5em;
     margin: .5em auto;
+}
+
+a {
+    text-decoration: none;
+    color: darkviolet
 }
 
 .carousel {
@@ -119,11 +128,20 @@ h2 {
     margin-left: 2em;
     background-color: lightsteelblue;
     padding-left: 5px;
-    padding-bottom: 10px;
+    padding-bottom: 40px;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .carousel-form span {
     font-weight: bold;
+}
+
+#credit {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    /* padding-top: 5px; */
+    margin: 0;
 }
