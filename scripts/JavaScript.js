@@ -91,7 +91,8 @@ function bindThumbClicks() {
             return;
         }
         setSelectedIndex(imgId);
-        setSelectedThumb()
+        setSelectedThumb();
+        console.log($(this).find('.thumb').data());
     });
 }
 
@@ -138,6 +139,7 @@ function reInitCarousel() {
     setInitData($carousel);
     updateSlideshowElements();
     updateFormElements();
+    bindThumbClicks();
 }
 
 function updateFormElements() {
@@ -149,6 +151,24 @@ function updateSlideshowElements() {
     showArrows();
     setSelectedThumb();
     showBigImage();
+}
+
+function addMoreImages() {
+    var highestId = getImages().length;
+    var images = getImages();
+    for (var i = 0; i < 10; i++) {
+        var imgId = highestId;
+        images.push({
+            id: imgId,
+            src: 'https://picsum.photos/id/' + imgId + '/1920/1080',
+            desc: 'alt' + (imgId + 1),
+            href: '/' + (imgId + 1)
+        });
+        highestId++;
+    }
+    $('.carousel').find('.slideshow').data('images', images);
+    // reInitCarousel();
+    updateSlideshowElements()
 }
 
 function removeVisibleThumbs() {
