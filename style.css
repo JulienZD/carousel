@@ -2,8 +2,14 @@
     box-sizing: border-box;
 }
 
+.container {
+    height: 1000px;
+    width: 1200px;
+}
+
 .carousel {
     background-color: darkgrey;
+    padding-top: 20px;
 }
 
 .carousel .bigimg, .carousel .arrow-left, .carousel .arrow-right, .carousel .thumb {
@@ -16,7 +22,8 @@
     height: 394px; /* Border doesn't play nice if this is set to 400 */
     background-size: contain;
     background-repeat: no-repeat;
-    border: 3px solid cyan;
+    border: 5px solid white;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19);
 }
 
 .carousel .bottom-wrapper {
