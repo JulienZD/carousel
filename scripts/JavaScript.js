@@ -19,7 +19,7 @@ function setInitImages(el) {
         images.push({
             id: imgId,
             src: img.data('src'),
-            alt: img.data('txt'),
+            desc: img.data('desc'),
             href: img.data('link')
         });
        $(this).remove();
@@ -122,7 +122,7 @@ function updateSlideshowElements() {
 }
 
 function removeVisibleThumbs() {
-    var visibleThumbs = $('.thumb:not(:hidden)');
+    var visibleThumbs = $('.thumb-wrapper:not(:hidden)');
     visibleThumbs.each(function() {
         $(this).remove();
     });
@@ -140,17 +140,20 @@ function showThumbnails() {
            break;
         }
         var img = images[index];
-        var thumb = $('.thumb:hidden').clone();
+        var thumbWrapper = $('.thumb-wrapper:hidden').clone();
+        var thumb = thumbWrapper.find('.thumb');
         thumb.attr({
             src: img['src'],
-            alt: img['alt']
+            alt: img['desc']
         });
         // Set href for bigImg
         $(thumb).data({
             'href': img['href'],
             'id': img['id']
         });
-        thumb.appendTo('.slideshow').show();
+        // Set text under thumb
+        $(thumbWrapper).find('span').text(img['desc']);
+        thumbWrapper.appendTo('.slideshow').show();
         index++;
     }
 }
@@ -189,10 +192,10 @@ function showArrows() {
 function setSelectedThumb() {
     var selectedIndex = getSelectedIndex();
     // Remove selected tag from thumbnails
-    $('.thumb').removeClass('selected-thumb');
+    $('.thumb-wrapper').removeClass('selected-thumb');
     // Find corresponding thumbnail and set it as selected
-    $('.thumb').filter(function() {
-        return $(this).data('id') == selectedIndex
+    $('.thumb-wrapper').filter(function() {
+        return $(this).find('.thumb').data('id') == selectedIndex
     }).addClass('selected-thumb');
     showBigImage();
 }
@@ -228,7 +231,7 @@ function selectNextThumb(direction) {
     var selectedIndex = getSelectedIndex();
     var size = getSize();
     var maxLength = getImages().length;
-    var visibleThumbs = $('.slideshow').find('.thumb:not(:hidden)').length;
+    var visibleThumbs = $('.slideshow').find('.thumb-wrapper:not(:hidden)').length;
     if (direction == 'left') {
         if (selectedIndex > 0 && selectedIndex % size == 0) {
             clickArrow('left');
