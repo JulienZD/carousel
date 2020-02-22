@@ -8,6 +8,7 @@ function initCarousel(selector) {
     setInitImages($carousel);
     setInitData($carousel);
     updateSlideshowElements();
+    updateFormElements();
     bind();
 }
 
@@ -133,10 +134,14 @@ function reInitCarousel() {
     $carousel = $('.carousel');
     var newSize = parseInt($('.carousel-form input#size').val());
     setSize(newSize);
-    $('.carousel-form span').text(newSize);
     $('.carousel').data('size', newSize);
     setInitData($carousel);
     updateSlideshowElements();
+    updateFormElements();
+}
+
+function updateFormElements() {
+    $('.carousel-form span').text($('.slideshow').data('size'));
 }
 
 function updateSlideshowElements() {

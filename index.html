@@ -8,32 +8,35 @@
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
-        <div class="container">
-            <div class="carousel" data-size="4">
-                <img data-src="img/1.png" data-desc="alt1" data-link="https://www.youtube.com/" />
-                <img data-src="img/2.png" data-desc="alt2" data-link="/y" />
-                <img data-src="img/3.png" data-desc="alt3" data-link="/z" />
-                <img data-src="img/4.png" data-desc="alt4" data-link="/a" />
-                <img data-src="img/5.png" data-desc="alt5" data-link="/b" />
-                <img data-src="img/6.png" data-desc="alt6" data-link="https://www.google.com/" />
-                <img data-src="img/7.png" data-desc="alt7" data-link="/d" />
-                <img data-src="img/8.png" data-desc="alt8" data-link="/e" />
-                <img data-src="img/9.png" data-desc="alt9" data-link="/f" />
-                <img data-src="img/10.png" data-desc="alt10" data-link="/g" />
-                <img data-src="img/11.png" data-desc="alt11" data-link="/h" />
-                <img data-src="img/12.png" data-desc="alt12" data-link="/i" />
-                <img data-src="img/13.png" data-desc="alt13" data-link="/j" />
-                <img data-src="img/14.png" data-desc="alt14" data-link="/k" />
-                <img data-src="img/15.png" data-desc="alt15" data-link="/l" />
+        <div class="page-container">
+            <div class="container">
+                <div class="carousel" data-size="4">
+                    <img data-src="img/1.png" data-desc="alt1" data-link="https://www.youtube.com/" />
+                    <img data-src="img/2.png" data-desc="alt2" data-link="/y" />
+                    <img data-src="img/3.png" data-desc="alt3" data-link="/z" />
+                    <img data-src="img/4.png" data-desc="alt4" data-link="/a" />
+                    <img data-src="img/5.png" data-desc="alt5" data-link="/b" />
+                    <img data-src="img/6.png" data-desc="alt6" data-link="https://www.google.com/" />
+                    <img data-src="img/7.png" data-desc="alt7" data-link="/d" />
+                    <img data-src="img/8.png" data-desc="alt8" data-link="/e" />
+                    <img data-src="img/9.png" data-desc="alt9" data-link="/f" />
+                    <img data-src="img/10.png" data-desc="alt10" data-link="/g" />
+                    <img data-src="img/11.png" data-desc="alt11" data-link="/h" />
+                    <img data-src="img/12.png" data-desc="alt12" data-link="/i" />
+                    <img data-src="img/13.png" data-desc="alt13" data-link="/j" />
+                    <img data-src="img/14.png" data-desc="alt14" data-link="/k" />
+                    <img data-src="img/15.png" data-desc="alt15" data-link="/l" />
+                </div>
             </div>
+            <div class="carousel-form">
+                <form>
+                    <p>Carousel size: <span></span></p>
+                    <label class="ms-label" for="size">Size:</label>
+                    <input class="input" type="number" id="size" name="size" min="1" max="50"/>
+                    <button type="button">Update carousel</button>
+                </form>
+            </divclass="carousel-form">
         </div>
-        <form class="carousel-form">
-            <p>Carousel size: <span></span></p>
-            <label class="ms-label" for="size">Size:</label>
-            <input class="input" type="number" id="size" name="size" min="0" max="50" value="0"/>
-            <button type="button">Update carousel</button>
-        </form>
-
         
 
         <div id="carousel-template" style="display:none">
