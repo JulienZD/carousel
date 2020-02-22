@@ -259,6 +259,10 @@ function selectNextThumb(direction) {
             clickDir = 'right';
         }
     }
+    // One of the ends has been reached.
+    if (getSelectedIndex() == selectedIndex) {
+        return;
+    }
     setSelectedIndex(selectedIndex);
     if (clickDir != "") { 
         // This gets called here instead of in the above expressions to avoid double
