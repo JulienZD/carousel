@@ -7,7 +7,7 @@ function initCarousel(selector) {
     $("#carousel-template").children().appendTo($carousel);
     setInitImages($carousel);
     setInitData($carousel);
-    updateSlideshowElements()
+    updateSlideshowElements();
     bind();
 }
 
@@ -22,7 +22,7 @@ function setInitImages(el) {
             desc: img.data('desc'),
             href: img.data('link')
         });
-       $(this).remove();
+       $(this).hide();
         imgId++;
     });
     el.find('.slideshow').data('images', images);
@@ -46,6 +46,10 @@ function setInitData(el) {
     });
 }
 
+function setSize(size) {
+    $('.carousel').data('size', size);
+}
+
 function setSelectedIndex(id) {
     $('.slideshow').data('selectedIndex', id);
 }
@@ -55,7 +59,7 @@ function setStartIndex(index) {
 }
 
 function getStartIndex() {
-    return $('.slideshow').data('startIndex');
+    return parseInt($('.slideshow').data('startIndex'));
 }
 
 function getImages() {
@@ -74,7 +78,8 @@ function bind() {
     bindArrowClicks();
     bindThumbClicks();
     bindBigImageClick();
-    bindArrowKeys()
+    bindArrowKeys();
+    bindButton();
 }
 
 function bindThumbClicks() {
@@ -116,6 +121,22 @@ function bindArrowKeys() {
                 break;
         }
     });
+}
+
+function bindButton() {
+    $('.carousel-form button').on('click', function() {
+        reInitCarousel();
+    })
+}
+
+function reInitCarousel() {
+    $carousel = $('.carousel');
+    var newSize = parseInt($('.carousel-form input#size').val());
+    setSize(newSize);
+    $('.carousel-form span').text(newSize);
+    $('.carousel').data('size', newSize);
+    setInitData($carousel);
+    updateSlideshowElements();
 }
 
 function updateSlideshowElements() {
