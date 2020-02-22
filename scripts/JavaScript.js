@@ -270,7 +270,7 @@ function selectNextThumb(direction) {
         return;
     }
     setSelectedIndex(selectedIndex);
-    if (clickDir != "") { 
+    if (clickDir != undefined) { 
         // This gets called here instead of in the above expressions to avoid double
         // fading
         clickArrow(clickDir);
