@@ -80,7 +80,7 @@ function bind() {
     bindThumbClicks();
     bindBigImageClick();
     bindArrowKeys();
-    bindButton();
+    bindButtons();
 }
 
 function bindThumbClicks() {
@@ -125,15 +125,19 @@ function bindArrowKeys() {
     });
 }
 
-function bindButton() {
-    $('.carousel-form button').on('click', function() {
+function bindButtons() {
+    $('.carousel-form .changeSize button').on('click', function() {
         reInitCarousel();
     })
+
+    $('.carousel-form .addImages button').on('click', function() {
+        addMoreImages();
+    });
 }
 
 function reInitCarousel() {
     $carousel = $('.carousel');
-    var newSize = parseInt($('.carousel-form input#size').val());
+    var newSize = parseInt($('.changeSize input#size').val());
     setSize(newSize);
     $('.carousel').data('size', newSize);
     setInitData($carousel);
@@ -143,7 +147,9 @@ function reInitCarousel() {
 }
 
 function updateFormElements() {
-    $('.carousel-form span').text($('.slideshow').data('size'));
+    $carouselForm = $('.carousel-form');
+    $carouselForm.find('#carouselSize').text($('.slideshow').data('size'));
+    $carouselForm.find('#imgAmt').text(getImages().length);
 }
 
 function updateSlideshowElements() {
@@ -154,9 +160,10 @@ function updateSlideshowElements() {
 }
 
 function addMoreImages() {
+    var amount = parseInt($('.carousel-form .addImages #newImages').val());
     var highestId = getImages().length;
     var images = getImages();
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < amount; i++) {
         var imgId = highestId;
         images.push({
             id: imgId,
@@ -167,8 +174,8 @@ function addMoreImages() {
         highestId++;
     }
     $('.carousel').find('.slideshow').data('images', images);
-    // reInitCarousel();
-    updateSlideshowElements()
+    updateSlideshowElements();
+    updateFormElements();
 }
 
 function removeVisibleThumbs() {

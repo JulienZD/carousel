@@ -29,11 +29,18 @@
                 </div>
             </div>
             <div class="carousel-form">
-                <form>
-                    <p>Carousel size: <span></span></p>
+                <p>Total amount of images: <span id="imgAmt"></span></p>
+                <form class="changeSize">
+                    <p>Carousel size: <span id="carouselSize"></span></p>
                     <label class="ms-label" for="size">Size:</label>
-                    <input class="input" type="number" id="size" name="size" min="1" max="50"/>
+                    <input class="input" type="number" id="size" name="size" min="1" max="50" value="1"/>
                     <button type="button">Update carousel</button>
+                </form>
+                <form class="addImages">
+                    <p>Enter an amount of images to add</p>
+                    <label for="newImages">Amount:</label>
+                    <input class="input" type="number" id="newImages" name="newImages" min="1" max="20"/>
+                    <button type="button">Add images</button>
                 </form>
             </div>
         </div>
