@@ -255,7 +255,7 @@ function showBigImage() {
     // Find image to set as bigImg
     var selectedIndex = getSelectedIndex();
     var image = $('.thumb').filter(function() {
-        return $(this).data('id') == selectedIndex
+        return $(this).data('id') == selectedIndex;
     });
     // Set background
     var url = $(image).attr('src');
