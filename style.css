@@ -9,12 +9,12 @@
 }
 
 .container {
-    width: 1200px;
+    width: 80%;
 }
 
 label, p, h2, a {
     font-family: Tahoma, Geneva, sans-serif;
-    
+
 }
 
 label, p {
@@ -52,7 +52,7 @@ a {
 
 .carousel .bottom-wrapper {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     margin-top: 1em;
     padding: 10px 0;
@@ -73,6 +73,7 @@ a {
     padding: 3px;
     min-height: 0;
     min-width: 0;
+    flex-shrink: 0;
 }
 
 .carousel .thumb-wrapper {
@@ -86,6 +87,7 @@ a {
     min-width: 0;
     max-height: 170px;
     max-width: 240px;
+    flex: 1 0 120px;
 }
 
 .thumb-wrapper span {
@@ -132,6 +134,26 @@ a {
     display: flex;
     flex-direction: column;
     position: relative;
+    border: 3px solid black;
+    padding-right: 3em;
+    box-shadow: 3px 5px 14px 4px black;
+}
+
+#pImgAmt {
+    margin-bottom: 0;
+}
+
+.carousel-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.changeSize button {
+    width: 10em;
+}
+
+.addImages button {
+    width: 5em;
 }
 
 .carousel-form span {
@@ -142,6 +164,5 @@ a {
     position: absolute;
     bottom: 3px;
     right: 3px;
-    /* padding-top: 5px; */
     margin: 0;
 }
