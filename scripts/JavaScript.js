@@ -167,7 +167,7 @@ function addMoreImages() {
         var imgId = highestId;
         images.push({
             id: imgId,
-            src: 'https://picsum.photos/id/' + imgId + '/1920/1080',
+            src: 'https://picsum.photos/id/' + (imgId + 10) + '/1920/1080', // Add 10 because of the images starting at id=10 in html
             desc: 'alt' + (imgId + 1),
             href: '/' + (imgId + 1)
         });
